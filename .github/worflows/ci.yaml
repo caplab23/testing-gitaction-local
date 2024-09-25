@@ -1,0 +1,29 @@
+name: CI Pipeline for Mule Project
+
+on:
+  push:
+    branches:
+      - main 
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # Utilise Temurin JDK
+          java-version: '11' # Spécifie la version de Java
+
+      - name: Build Mule project
+        run: |
+          mvn clean install # Commande Maven pour construire le projet Mule
+
+      - name: Display success message
+        if: success() # Cette étape s'exécute seulement si le build a réussi
+        run: echo "Build succeeded! The Mule project has been built successfully."
