@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="406ea5b4-59a2-4685-8a93-7c5d2995affa" file="properties.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2c340196-cc9a-460a-b518-1e0c0673d050" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<flow name="testing-gitaction-localFlow" doc:id="c8c41a3d-0166-4243-9dba-15baa7f9eddc" >
+		<http:listener doc:name="Listener" doc:id="666064c5-ef50-4de3-8e20-f06313375a78" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="begin" doc:id="ad9a13fe-4dbd-4a3d-9e92-a4d3d73b93c8" message='"begin"'/>
+		<ee:transform doc:name="Transform Message" doc:id="73cdbcf6-cbb7-4cc0-92c2-a29ef6b9339f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" :  "hello, it is working :) "
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="end" doc:id="59ba08c4-e459-4d04-a5db-9d3d202d3d0a" message='"end"'/>
+	</flow>
+</mule>
