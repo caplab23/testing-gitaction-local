@@ -10,11 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Définir les variables d'environnement et les secrets au niveau du job
+    # Définir les variables d'environnement au niveau du job
     env:
-      http_host: ${{ env.HTTP_HOST }}    # Variable d'environnement créée dans GitHub Actions
-      http_port: ${{ env.HTTP_PORT }}    # Variable d'environnement créée dans GitHub Actions
-      API_KEY: ${{ secrets.API_KEY }}    # Secret créé dans GitHub Actions
+      HTTP_HOST: ${{ vars.HTTP_HOST }}    # Variable d'environnement créée dans GitHub Actions
+      HTTP_PORT: ${{ vars.HTTP_PORT }}    # Variable d'environnement créée dans GitHub Actions
+      API_KEY: ${{ secrets.API_KEY }}      # Secret créé dans GitHub Actions
 
     steps:
       - name: Checkout code
@@ -26,12 +26,11 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      # Étape pour afficher les variables d'environnement et les secrets (optionnel, pour vérifier)
-      # ATTENTION : ne jamais afficher le secret en production
+      # Étape pour afficher les variables d'environnement et les secrets (optionnel)
       - name: Display environment variables and secrets
         run: |
-          echo "HTTP Host: $http_host"
-          echo "HTTP Port: $http_port"
+          echo "HTTP Host: $HTTP_HOST"
+          echo "HTTP Port: $HTTP_PORT"
           echo "API Key: $API_KEY" # Attention, ne pas garder cette ligne en production !
 
       - name: Build Mule project
