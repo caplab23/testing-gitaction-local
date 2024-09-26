@@ -22,6 +22,6 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="end" doc:id="59ba08c4-e459-4d04-a5db-9d3d202d3d0a" message='"end"'/>
+		<logger level="INFO" doc:name="end" doc:id="59ba08c4-e459-4d04-a5db-9d3d202d3d0a" message="Using API Key: ${api.key}"/>
 	</flow>
 </mule>

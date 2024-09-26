@@ -1,9 +1,7 @@
-name: CI Pipeline for Mule Project
-
 on:
   push:
     branches:
-      - main 
+      - main
   pull_request:
 
 jobs:
@@ -17,13 +15,38 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Utilise Temurin JDK
-          java-version: '11' # Spécifie la version de Java
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Load environment variables from .env and .secret files
+        run: |
+          export $(grep -v '^#' .env | xargs)
+          export $(grep -v '^#' .secret | xargs)
+
+      - name: Install Maven
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y maven
+
+      # Étape pour afficher les variables d'environnement et les secrets
+      - name: Display environment variables and secrets
+        run: |
+          echo "HTTP Host: $http_host"
+          echo "HTTP Port: $http_port"
+          echo "API Key: $API_KEY" # Attention, ne pas garder cette ligne en production !
+        env: 
+          http_host: ${{ env.http_host }}
+          http_port: ${{ env.http_port }}
+          API_KEY: ${{ secrets.API_KEY }}  # Secret récupéré de GitHub
 
       - name: Build Mule project
         run: |
-          mvn clean install # Commande Maven pour construire le projet Mule
+          mvn clean install
+        env: 
+          http.host: ${{ env.http_host }}
+          http.port: ${{ env.http_port }}
+          API_KEY: ${{ secrets.API_KEY }}
 
       - name: Display success message
-        if: success() # Cette étape s'exécute seulement si le build a réussi
+        if: success()
         run: echo "Build succeeded! The Mule project has been built successfully."
