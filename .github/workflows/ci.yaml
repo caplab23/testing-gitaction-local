@@ -1,3 +1,5 @@
+name: CI Pipeline for Mule Project
+
 on:
   push:
     branches:
@@ -7,6 +9,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    # Définir les variables d'environnement et les secrets au niveau du job
+    env:
+      http_host: ${{ env.HTTP_HOST }}    # Variable d'environnement créée dans GitHub Actions
+      http_port: ${{ env.HTTP_PORT }}    # Variable d'environnement créée dans GitHub Actions
+      API_KEY: ${{ secrets.API_KEY }}    # Secret créé dans GitHub Actions
 
     steps:
       - name: Checkout code
@@ -18,34 +26,17 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Load environment variables from .env and .secret files
-        run: |
-          export $(grep -v '^#' .env | xargs)
-          export $(grep -v '^#' .secret | xargs)
-
-      - name: Install Maven
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y maven
-
-      # Étape pour afficher les variables d'environnement et les secrets
+      # Étape pour afficher les variables d'environnement et les secrets (optionnel, pour vérifier)
+      # ATTENTION : ne jamais afficher le secret en production
       - name: Display environment variables and secrets
         run: |
           echo "HTTP Host: $http_host"
           echo "HTTP Port: $http_port"
           echo "API Key: $API_KEY" # Attention, ne pas garder cette ligne en production !
-        env: 
-          http_host: ${{ env.http_host }}
-          http_port: ${{ env.http_port }}
-          API_KEY: ${{ secrets.API_KEY }}  # Secret récupéré de GitHub
 
       - name: Build Mule project
         run: |
           mvn clean install
-        env: 
-          http.host: ${{ env.http_host }}
-          http.port: ${{ env.http_port }}
-          API_KEY: ${{ secrets.API_KEY }}
 
       - name: Display success message
         if: success()
